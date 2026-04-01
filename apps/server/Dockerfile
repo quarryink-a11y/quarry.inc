@@ -1,8 +1,8 @@
 FROM node:20-alpine AS build
 WORKDIR /app
 
-# Copy workspace root files needed for npm install
-COPY package.json package-lock.json turbo.json ./
+# Copy workspace root files
+COPY package.json package-lock.json turbo.json tsconfig.base.json ./
 COPY apps/server/package.json ./apps/server/
 COPY packages/api-types/package.json ./packages/api-types/
 COPY packages/api-client/package.json ./packages/api-client/
@@ -18,10 +18,8 @@ RUN cd apps/server && npm rebuild bcrypt
 COPY apps/server/ ./apps/server/
 COPY packages/ ./packages/
 
-# Generate Prisma Client (dummy DATABASE_URL needed for prisma.config.ts)
-ENV DATABASE_URL="postgresql://dummy:dummy@localhost:5432/dummy"
+# Generate Prisma Client
 RUN cd apps/server && npx prisma generate
-ENV DATABASE_URL=""
 
 # Build NestJS
 RUN cd apps/server && npm run build

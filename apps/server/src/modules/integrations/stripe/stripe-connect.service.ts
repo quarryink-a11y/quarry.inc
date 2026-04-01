@@ -13,8 +13,7 @@ export class StripeConnectService {
     constructor(
         private readonly prisma: PrismaService,
         private readonly stripeService: StripeService,
-        private readonly mailService: MailService,
-        private readonly logger: Logger
+        private readonly mailService: MailService
     ) {}
 
     async handleCheckoutSessionCompleted(event: Stripe.Event) {
@@ -77,9 +76,8 @@ export class StripeConnectService {
 
         await this.notifyOwnerOfPurchase(siteId, order);
     }
-    handleAccountUpdated(event: Stripe.Event) {
-        const account = event.data.object as Stripe.Account;
-        this.logger.log(1, `[Connect] Account ${account.id} updated. charges_enabled: ${account.charges_enabled}`);
+    handleAccountUpdated(_event: Stripe.Event) {
+        // MVP: no-op. getConnectStatus() always fetches live from Stripe.
     }
 
     private async notifyOwnerOfPurchase(

@@ -21,8 +21,8 @@ interface TemplatePreviewModalProps {
   template: {
     id: string;
     name: string;
-    description: string;
-    preview_image: string;
+    description: string | null;
+    preview_image: string | null;
     preview_screens?: string[];
     sections: string[];
   };
@@ -38,7 +38,7 @@ export function TemplatePreviewModal({
   const allImages = [
     template.preview_image,
     ...(template.preview_screens ?? []),
-  ];
+  ].filter(Boolean) as string[];
   const [activeIndex, setActiveIndex] = useState(0);
 
   const goPrev = () =>

@@ -1,0 +1,26 @@
+model OwnerProfile {
+    id               String                @id @default(cuid())
+    owner_id         String                @unique
+    owner            Owner                 @relation(fields: [owner_id], references: [id])
+    full_name        String
+    description      String?
+    country          String?
+    city             String?
+    studio_name      String?
+    studio_address   String?
+    phone            String?
+    email            String?
+    social_media     Json              @default("{}")
+    photo_url        String?
+    studio_photo_url String?
+
+    about_text      String?
+    about_blocks    Json?
+    about_photo_url String?
+
+    created_at DateTime @default(now())
+    updated_at DateTime @updatedAt
+
+    @@index([owner_id])
+    @@index([created_at])
+}

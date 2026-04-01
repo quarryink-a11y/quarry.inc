@@ -1,0 +1,20 @@
+model TrackVisit {
+  id             String        @id @default(cuid())
+  site_id        String
+  path           String
+  visitor_key    String?
+  referrer       String?
+  traffic_source TrafficSource
+  user_agent     String?
+  site           Site          @relation(fields: [site_id], references: [id], onDelete: Cascade)
+
+  visited_at DateTime @default(now())
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@index([site_id])
+  @@index([visited_at])
+  @@index([visitor_key])
+  @@index([site_id, visitor_key, path, visited_at])
+  @@map("track_visits")
+}

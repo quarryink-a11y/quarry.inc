@@ -1,0 +1,16 @@
+model BookingStep {
+  id          String  @id @default(cuid())
+  site_id     String
+  site        Site    @relation(fields: [site_id], references: [id], onDelete: Cascade)
+  title        String
+  description  String?
+  sort_order   Int     @default(0)
+  type         ContentType @default(DRAFT)
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@index([site_id])
+  @@index([site_id, type])
+  @@map("booking_steps")
+}

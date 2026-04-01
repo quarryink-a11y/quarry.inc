@@ -1,0 +1,22 @@
+model Review {
+    id                 String  @id @default(cuid())
+    site_id            String
+    client_name        String
+    review_source      String
+    review_text        String
+    client_profile_url String?
+    client_image_url       String?
+    client_image_public_id String?
+    type                   ContentType @default(DRAFT)
+
+    created_at DateTime @default(now())
+    updated_at DateTime @updatedAt
+
+    site Site @relation(fields: [site_id], references: [id], onDelete: Cascade)
+
+    @@index([id])
+    @@index([created_at])
+    @@index([updated_at])
+    @@index([site_id, type])
+    @@map("reviews")
+}

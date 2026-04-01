@@ -1,0 +1,24 @@
+model Admin {
+    id                 String   @id @default(cuid())
+    site_id        String
+
+    first_name         String?
+    last_name          String?
+    email              String   @unique
+    password_hash      String
+    phone_code         String?
+    phone_country_code String?
+    phone_number       String?
+    role               Role     @default(ADMIN)
+    access_modules            AdminPermission[] @default([])
+
+    created_at DateTime @default(now())
+    updated_at DateTime @updatedAt
+
+    site Site @relation(fields: [site_id], references: [id], onDelete: Cascade)
+
+    @@index([id])
+    @@index([created_at])
+    @@index([updated_at])
+    @@map("admins")
+}

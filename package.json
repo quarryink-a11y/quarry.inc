@@ -1,0 +1,40 @@
+{
+  "name": "quarry.inc",
+  "version": "1.0.0",
+  "description": "Monorepo for Quarry.inc project",
+  "keywords": [
+    "monorepo",
+    "nestjs",
+    "nextjs",
+    "quarry"
+  ],
+  "license": "ISC",
+  "author": "Ferdinand Celine",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "packageManager": "npm@11.8.0",
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "lint": "turbo run lint --continue",
+    "lint:fix": "turbo run lint:fix --continue",
+    "format": "turbo run format --continue",
+    "format:fix": "turbo run format:fix --continue",
+    "typecheck": "turbo run typecheck --continue",
+    "generate-api": "openapi-typescript http://localhost:4000/api/open-api/openapi.json -o packages/api-types/src/api.d.ts",
+    "test": "turbo run test",
+    "clean": "turbo run clean",
+    "install-all": "npm install && npm run install --workspaces"
+  },
+  "dependencies": {
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "turbo": "^2.8.20",
+    "typescript": "^5.7.3",
+    "prettier": "^3.8.1",
+    "@types/node": "^22.10.7"
+  }
+}

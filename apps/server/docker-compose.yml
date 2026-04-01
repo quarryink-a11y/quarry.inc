@@ -1,0 +1,14 @@
+services:
+    dev-tattoo-app:
+        image: postgres:latest
+        ports:
+            - '5434:5432'
+        environment:
+            POSTGRES_USER: admin
+            POSTGRES_PASSWORD: 1234
+            POSTGRES_DB: mydatabase
+        networks:
+            - mynetwork
+networks:
+    mynetwork:
+        driver: bridge

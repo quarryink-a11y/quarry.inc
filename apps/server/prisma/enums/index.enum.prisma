@@ -1,0 +1,178 @@
+// TODO: Add more enums as needed and rename existing ones to be more descriptive
+enum TemplateKind {
+  TEMPLATE1
+  TEMPLATE2
+}
+
+enum Role {
+  SUPER_ADMIN
+  OWNER
+  ADMIN
+}
+
+enum Status {
+  PENDING
+  ACTIVE
+  INACTIVE
+  SUSPENDED
+}
+
+enum MediaType {
+  IMAGE
+  VIDEO
+  DOCUMENT
+}
+
+enum MediaStatus {
+  PENDING
+  ATTACHED
+}
+
+enum OnboardingStatus {
+  ONBOARDING_STARTED
+  TEMPLATE_SELECTED
+  PROFILE_COMPLETED
+  BILLING_SETUP_COMPLETED
+  ONBOARDING_COMPLETED
+}
+
+enum InquiryStatus {
+  NEW
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+enum BillingStatus {
+  PENDING
+  ACTIVE
+  TRIALING
+  PAST_DUE
+  FAILED
+  COMPLETED
+  REFUNDED
+  CANCELED
+}
+
+enum TrafficSource {
+  INSTAGRAM
+  FACEBOOK
+  GOOGLE
+  DIRECT
+  OTHER
+}
+
+enum ReferralSource {
+  INSTAGRAM
+  FACEBOOK
+  GOOGLE
+  TIKTOK
+  REFERRAL
+  OTHER
+}
+
+enum OrderStatus {
+  PAID
+  PENDING
+  FAILED
+  REFUNDED
+}
+
+enum Currency {
+  USD
+  CAD
+  EUR
+  UAH
+}
+
+enum CatalogCategory {
+  MERCH
+  GIFT_CERTIFICATE
+  PRINT
+  STICKER
+  OTHER
+}
+
+enum ColorScheme {
+  BENTO
+  DARK
+}
+
+enum SizeUnit {
+  INCH
+  CM
+}
+
+enum EventStatus {
+  OPEN
+  CLOSED
+  WAITLIST
+  SOON
+}
+
+enum AdminPermission {
+  MANAGE_PORTFOLIO
+  MANAGE_EVENTS
+  MANAGE_REVIEWS
+  MANAGE_CATALOG
+  VIEW_INQUIRIES
+  MANAGE_SITE_SETTINGS
+}
+
+enum DomainKind {
+  CUSTOM
+  PLATFORM_SUBDOMAIN
+  PREVIEW
+}
+
+enum AuthProvider {
+  GOOGLE
+  APPLE
+  PASSWORD
+}
+
+
+enum SubscriptionPlan {
+  PRO
+  BASIC
+}
+
+enum SocialMediaPlatform {
+  INSTAGRAM
+  FACEBOOK
+  TIKTOK
+  WHATSAPP
+  YOUTUBE
+  TELEGRAM
+}
+
+
+enum OwnerOnboardingStatus {
+  ONBOARDING_STARTED
+
+  ONBOARDING_COMPLETED
+}
+
+enum ContentType {
+  DRAFT
+  PUBLISHED
+}
+
+enum SiteSection {
+  HERO
+  ABOUT
+  HOW_TO_BOOK
+  PORTFOLIO
+  DESIGNS
+  CATALOG
+  EVENTS
+  REVIEWS
+  FAQ
+  ADMINS
+  ANALYTICS
+  BOOKING_FORM
+  // TODO: Check if we need it
+  ARTIST_PROFILE
+  WELCOME
+  ORDERS
+}

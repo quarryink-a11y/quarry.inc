@@ -1,0 +1,25 @@
+model OnboardingTemplate {
+    id              String                      @id @default(cuid())
+    name            String
+    description     String?
+    preview_image   String?
+    preview_screens String[]                    @default([]) // Array of image URLs for preview screens
+    is_popular      Boolean                     @default(false)
+    is_active       Boolean                     @default(true)
+    sections        SiteSection[] @default([])
+    kind            TemplateKind                @default(TEMPLATE1)
+    color_scheme    ColorScheme?
+    sort_order      Int                         @default(0)
+
+    sites      Site[]   @relation
+    created_at DateTime @default(now())
+    updated_at DateTime @updatedAt
+
+    @@index([id])
+    @@index([created_at])
+    @@index([updated_at])
+    @@index([is_active])
+    @@index([sort_order])
+    @@index([sort_order, created_at])
+    @@map("onboarding_templates")
+}

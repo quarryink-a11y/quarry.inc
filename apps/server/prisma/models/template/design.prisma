@@ -1,0 +1,25 @@
+model Design {
+    id                       String    @id @default(cuid())
+    site_id  String
+
+    name                     String?
+    price                    Decimal? @db.Decimal(10, 2)
+    currency                 Currency?
+    size                     Float?
+    size_unit                SizeUnit?
+    preferred_body_placement String[]  @default([])
+    image_url                String
+    image_public_id          String?
+    type                     ContentType @default(DRAFT)
+
+    created_at DateTime @default(now())
+    updated_at DateTime @updatedAt
+
+    site Site @relation(fields: [site_id], references: [id], onDelete: Cascade)
+
+    @@index([id])
+    @@index([created_at])
+    @@index([updated_at])
+    @@index([site_id, type])
+    @@map("designs")
+}

@@ -1,0 +1,20 @@
+model SiteSeo {
+    id             String  @id @default(cuid())
+    title          String?
+    description    String?
+    keywords       String?
+    og_image_url   String?
+    og_title       String?
+    og_description String?
+
+    site_id String      @unique
+    site    Site @relation(fields: [site_id], references: [id], onDelete: Cascade)
+
+    created_at DateTime @default(now())
+    updated_at DateTime @updatedAt
+
+    @@index([id])
+    @@index([site_id])
+    @@index([created_at])
+    @@map("site_seos")
+}

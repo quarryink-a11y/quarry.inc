@@ -1,0 +1,83 @@
+<html lang='ru'>
+    <head>
+        <meta charset='UTF-8' />
+        <title>New Inquiry</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                color: #222;
+                line-height: 1.6;
+            }
+
+            .container {
+                max-width: 700px;
+                margin: 0 auto;
+                padding: 24px;
+            }
+
+            .title {
+                font-size: 24px;
+                font-weight: bold;
+                margin-bottom: 24px;
+            }
+
+            .section {
+                margin-bottom: 24px;
+            }
+
+            .label {
+                font-weight: bold;
+            }
+
+            .block {
+                padding: 16px;
+                background: #f7f7f7;
+                border-radius: 8px;
+            }
+
+            ul {
+                padding-left: 20px;
+            }
+
+            a {
+                color: #0a66c2;
+                text-decoration: none;
+            }
+        </style>
+    </head>
+    <body>
+        <div class='container'>
+            <div class='title'>New inquiry from {{clientName}}</div>
+
+            <div class='section block'>
+                <p><span class='label'>Client Name:</span> {{clientName}}</p>
+                <p><span class='label'>Email:</span> {{clientEmail}}</p>
+                <p><span class='label'>Phone:</span> {{clientPhone}}</p>
+            </div>
+
+            <div class='section block'>
+                <p><span class='label'>First Name:</span> {{firstName}}</p>
+                <p><span class='label'>Last Name:</span> {{lastName}}</p>
+                <p><span class='label'>Idea Description:</span> {{ideaDescription}}</p>
+                <p><span class='label'>Placement:</span> {{placement}}</p>
+                <p><span class='label'>Size:</span> {{size}}</p>
+                <p><span class='label'>Preferred Date:</span> {{preferredDate}}</p>
+                <p><span class='label'>City:</span> {{city}}</p>
+                <p><span class='label'>Referral Source:</span> {{referralSource}}</p>
+            </div>
+
+            {{#if hasInspiration}}
+                <div class='section block'>
+                    <p class='label'>References:</p>
+                    <ul>
+                        {{#each inspirationUrls}}
+                            <li>
+                                <a href='{{this}}' target='_blank' rel='noopener noreferrer'>{{this}}</a>
+                            </li>
+                        {{/each}}
+                    </ul>
+                </div>
+            {{/if}}
+        </div>
+    </body>
+</html>

@@ -1,0 +1,19 @@
+model User {
+  id             String  @id @default(cuid())
+  email          String  @unique
+  email_verified Boolean @default(false)
+  display_name   String?
+  avatar_url     String?
+
+  auth_identities           AuthIdentity[]
+  credential_secret         CredentialSecret?
+  refresh_sessions          RefreshSession[]
+  password_reset_tokens     PasswordResetToken[]
+  email_verification_tokens EmailVerificationToken[]
+
+  owner      Owner?
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@map("users")
+}

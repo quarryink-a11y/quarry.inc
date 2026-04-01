@@ -1,0 +1,16 @@
+model Owner {
+  id      String @id @default(cuid())
+  user_id String @unique
+  user    User   @relation(fields: [user_id], references: [id])
+  role    Role   @default(OWNER)
+  status  Status @default(PENDING)
+
+  site    Site?         @relation // One-to-one relationship with Site, optional because an owner might not have a site yet
+  profile OwnerProfile? @relation // One-to-one relationship with OwnerProfile, optional because it might be created later
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@index([status])
+  @@map("owners")
+}

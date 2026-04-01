@@ -1,0 +1,16 @@
+{
+  "eslint.workingDirectories": [
+    {
+      "directory": "apps/server",
+      "changeProcessCWD": true
+    },
+    {
+      "directory": "apps/company",
+      "changeProcessCWD": true
+    },
+    {
+      "directory": "apps/templates",
+      "changeProcessCWD": true
+    }
+  ]
+}

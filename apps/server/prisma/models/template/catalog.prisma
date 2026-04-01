@@ -1,0 +1,70 @@
+model Catalog {
+  id          String   @id @default(cuid())
+  site_id     String
+  site        Site     @relation(fields: [site_id], references: [id], onDelete: Cascade)
+
+  name           String
+  description    String?
+  price          Decimal         @db.Decimal(10, 2)
+  currency       Currency
+  category       CatalogCategory
+  image_url        String
+  image_public_id  String?
+  is_active      Boolean         @default(true)
+  type           ContentType     @default(DRAFT)
+  stock_quantity Int?
+  gift_amounts   Int[]
+
+  orders Order[]
+
+  created_at  DateTime    @default(now())
+  updated_at  DateTime    @updatedAt
+  order_items OrderItem[]
+
+  @@index([site_id])
+  @@index([site_id, type])
+  @@map("catalogs")
+}
+
+model Order {
+  id         String  @id @default(cuid())
+  catalog_id String?
+  catalog    Catalog? @relation(fields: [catalog_id], references: [id], onDelete: SetNull)
+
+  stripe_session_id        String      @unique
+  stripe_payment_intent_id String      @unique
+  customer_name            String
+  customer_email           String
+  total_amount             Decimal     @db.Decimal(10, 2)
+  currency                 Currency
+  status                   OrderStatus
+
+  items OrderItem[]
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@index([catalog_id])
+  @@map("orders")
+}
+
+model OrderItem {
+  id       String @id @default(cuid())
+  order_id String
+  order    Order  @relation(fields: [order_id], references: [id], onDelete: Cascade)
+
+  catalog_id String?
+  catalog    Catalog? @relation(fields: [catalog_id], references: [id], onDelete: SetNull)
+
+  name     String
+  price    Decimal  @db.Decimal(10, 2)
+  currency Currency
+  quantity Int
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@index([order_id])
+  @@index([catalog_id])
+  @@map("order_items")
+}

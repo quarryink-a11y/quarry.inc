@@ -1,0 +1,28 @@
+model Event {
+    id          String    @id @default(cuid())
+    site_id  String
+    site Site @relation(fields: [site_id], references: [id], onDelete: Cascade)
+
+    location    String
+    country     String
+    city        String
+  start_at   DateTime
+  end_at     DateTime?
+    image_url       String
+    image_public_id String?
+    status          EventStatus @default(OPEN)
+    type            ContentType @default(DRAFT)
+
+    created_at DateTime @default(now())
+    updated_at DateTime @updatedAt
+
+    @@index([id])
+    @@index([created_at])
+    @@index([updated_at])
+    @@index([country])
+    @@index([city])
+    @@index([start_at])
+    @@index([end_at])
+    @@index([site_id, type])
+    @@map("events")
+}

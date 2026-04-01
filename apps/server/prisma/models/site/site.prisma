@@ -1,0 +1,43 @@
+model Site {
+  id                     String  @id @default(cuid())
+  owner_id               String  @unique
+  onboarding_template_id String?
+  status                 Status  @default(PENDING)
+
+  completed_modules SiteSection[]    @default([])
+  onboarding_status OnboardingStatus @default(ONBOARDING_STARTED)
+  owner_onboarding_status OwnerOnboardingStatus @default(ONBOARDING_STARTED)
+  published_at DateTime?
+
+  onboarding_template OnboardingTemplate? @relation(fields: [onboarding_template_id], references: [id])
+  owner               Owner               @relation(fields: [owner_id], references: [id], onDelete: Cascade)
+  site_domain         SiteDomain?
+  media_content       MediaContent[]      @relation
+  seo                 SiteSeo?                @relation
+  settings            SiteSettings?       @relation
+  inquiries           Inquiry[]           @relation
+  track_visits        TrackVisit[]        @relation
+  catalogs            Catalog[]           @relation
+
+  portfolios Portfolio[] @relation
+  designs    Design[]    @relation
+  events     Event[]     @relation
+  reviews    Review[]    @relation
+  admins          Admin[]        @relation
+  faq_categories  FaqCategory[]  @relation
+  booking_steps   BookingStep[]  @relation
+
+  billing SiteBilling[] @relation
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@index([owner_id])
+  @@index([status])
+  @@index([created_at])
+  @@index([updated_at])
+  @@index([onboarding_status])
+  @@index([owner_onboarding_status])
+  @@index([onboarding_template_id])
+  @@map("sites")
+}

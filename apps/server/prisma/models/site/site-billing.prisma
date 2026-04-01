@@ -1,0 +1,25 @@
+model SiteBilling {
+  id      String @id @default(cuid())
+  site_id String @unique
+  site    Site   @relation(fields: [site_id], references: [id], onDelete: Cascade)
+
+  stripe_customer_id        String? @unique
+  stripe_subscription_id    String? @unique
+  stripe_connect_account_id String? @unique
+  stripe_payment_method_id  String? @unique
+
+  billing_status      BillingStatus?
+  plan_code           SubscriptionPlan?
+  subscription_status String?
+  billing_email       String?
+
+  trial_ends_at      DateTime?
+  current_period_end DateTime?
+  canceled_at        DateTime?
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@index([site_id])
+  @@map("site_billings")
+}

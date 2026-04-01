@@ -1,0 +1,15 @@
+model SiteSettings {
+  id                String  @id @default(cuid())
+  site_id           String  @unique
+  site              Site    @relation(fields: [site_id], references: [id])
+  logo_url          String?
+  analytics_enabled Boolean @default(true)
+  site_sections     Json          @default("{}")
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@index([site_id])
+  @@index([id])
+  @@map("site_settings")
+}

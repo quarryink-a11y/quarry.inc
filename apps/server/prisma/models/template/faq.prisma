@@ -1,0 +1,31 @@
+model FaqCategory {
+  id         String    @id @default(cuid())
+  site_id    String
+  site       Site      @relation(fields: [site_id], references: [id], onDelete: Cascade)
+  title        String
+  sort_order   Int       @default(0)
+  type         ContentType @default(DRAFT)
+  items        FaqItem[]
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@index([site_id])
+  @@index([site_id, type])
+  @@map("faq_categories")
+}
+
+model FaqItem {
+  id          String      @id @default(cuid())
+  category_id String
+  category    FaqCategory @relation(fields: [category_id], references: [id], onDelete: Cascade)
+  question    String
+  answer      String?
+  sort_order  Int         @default(0)
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@index([category_id])
+  @@map("faq_items")
+}

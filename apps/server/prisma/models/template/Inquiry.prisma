@@ -1,0 +1,33 @@
+// This is form from the site, where potential clients can submit their inquiries. It's linked to the Owner model, as each inquiry is associated with a specific owner (client).
+model Inquiry {
+  id          String   @id @default(cuid())
+  site_id     String
+  site        Site     @relation(fields: [site_id], references: [id], onDelete: Cascade)
+
+  client_email     String
+  client_phone     String
+  first_name       String
+  last_name        String
+  idea_description String
+  placement        String
+  size_value       Float
+  size_unit        String
+  preferred_date   DateTime
+  city             String
+  referral_source  ReferralSource
+  inspiration_urls String[]
+  final_price      Decimal? @db.Decimal(10, 2)
+  status           InquiryStatus @default(NEW)
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@index([site_id])
+  @@index([created_at])
+  @@index([updated_at])
+  @@index([status])
+  @@index([final_price])
+  @@index([client_email])
+  @@index([created_at, status])
+  @@map("inquiries")
+}

@@ -1,0 +1,24 @@
+model MediaContent {
+  id        String      @id @default(cuid())
+  name      String
+  url       String
+  type      MediaType
+  status    MediaStatus @default(PENDING)
+  public_id String      @unique
+  format    String?
+  bytes     Int?
+  width     Int?
+  height    Int?
+  duration  Float?
+
+  site_id String
+  site    Site @relation(fields: [site_id], references: [id], onDelete: Cascade)
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@index([site_id])
+  @@index([status])
+  @@index([created_at])
+  @@map("media_contents")
+}

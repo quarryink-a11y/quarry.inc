@@ -1,0 +1,12 @@
+model SuperAdmin {
+  id            String @id @default(cuid())
+  email         String @unique
+  password_hash String // Hashed password
+  role          Role   @default(SUPER_ADMIN)
+  status        Status @default(ACTIVE)
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@map("super_admins")
+}

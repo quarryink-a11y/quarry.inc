@@ -38,4 +38,4 @@ COPY --from=build /app/apps/server/package.json ./apps/server/package.json
 WORKDIR /app/apps/server
 
 EXPOSE 4000
-CMD ["node", "dist/main"]
+CMD ["node", "dist/src/main"]

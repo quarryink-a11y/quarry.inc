@@ -18,8 +18,8 @@ RUN cd apps/server && npm rebuild bcrypt
 COPY apps/server/ ./apps/server/
 COPY packages/ ./packages/
 
-# Generate Prisma Client
-RUN cd apps/server && npx prisma generate
+# Generate Prisma Client (dummy DATABASE_URL needed for prisma.config.ts)
+RUN cd apps/server && DATABASE_URL="postgresql://dummy:dummy@localhost:5432/dummy" npx prisma generate
 
 # Build NestJS
 RUN cd apps/server && npm run build

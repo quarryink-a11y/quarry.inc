@@ -1,12 +1,21 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 import toast from "react-hot-toast";
 
 import type { NewPasswordValues } from "@/components/account/NewPassword";
 import { NewPasswordForm } from "@/components/account/NewPassword";
 
 export default function Page() {
+  return (
+    <Suspense>
+      <ResetPasswordContent />
+    </Suspense>
+  );
+}
+
+function ResetPasswordContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const token = searchParams.get("token");

@@ -1,12 +1,21 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 import toast from "react-hot-toast";
 
 import { VerifyEmailForm } from "@/components/account/VerifyEmailForm";
 import { useAuth } from "@/providers/AuthProvider";
 
 export default function Page() {
+  return (
+    <Suspense>
+      <VerifyEmailContent />
+    </Suspense>
+  );
+}
+
+function VerifyEmailContent() {
   const { setAuthenticatedUser } = useAuth();
   const searchParams = useSearchParams();
   const email = searchParams.get("email") ?? "";

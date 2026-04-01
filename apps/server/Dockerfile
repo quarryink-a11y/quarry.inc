@@ -19,7 +19,9 @@ COPY apps/server/ ./apps/server/
 COPY packages/ ./packages/
 
 # Generate Prisma Client (dummy DATABASE_URL needed for prisma.config.ts)
-RUN cd apps/server && DATABASE_URL="postgresql://dummy:dummy@localhost:5432/dummy" npx prisma generate
+ENV DATABASE_URL="postgresql://dummy:dummy@localhost:5432/dummy"
+RUN cd apps/server && npx prisma generate
+ENV DATABASE_URL=""
 
 # Build NestJS
 RUN cd apps/server && npm run build

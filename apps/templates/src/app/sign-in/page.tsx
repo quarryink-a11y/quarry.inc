@@ -1,6 +1,7 @@
 "use client";
 
 import adminSigninImage from "@public/images/admin/sign-in/signin-image.png";
+import { GoogleLogin } from "@react-oauth/google";
 import { motion } from "framer-motion";
 import { useRouter, useSearchParams } from "next/navigation";
 import Script from "next/script";
@@ -10,14 +11,6 @@ import toast from "react-hot-toast";
 import { SignInForm } from "@/features/sign-in";
 import { useTenantHref } from "@/shared/hooks/use-tenant-href";
 import { cn } from "@/shared/lib/utils";
-
-interface GoogleAccountsId {
-  initialize: (config: {
-    client_id: string;
-    callback: (response: { credential: string }) => void;
-  }) => void;
-  prompt: () => void;
-}
 
 interface AppleIDAuth {
   init: (config: {
@@ -35,7 +28,6 @@ interface AppleIDAuth {
 
 declare global {
   interface Window {
-    google?: { accounts: { id: GoogleAccountsId } };
     AppleID?: { auth: AppleIDAuth };
   }
 }
@@ -49,53 +41,46 @@ export default function AdminSignInPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { href } = useTenantHref();
-  const googleInitialized = useRef(false);
+  const googleContainerRef = useRef<HTMLDivElement>(null);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const [isAppleLoading, setIsAppleLoading] = useState(false);
 
   const getRedirectUrl = () =>
     searchParams.get("callbackUrl") ?? href("/admin");
 
-  const initGoogle = () => {
-    if (!window.google || googleInitialized.current) return;
+  const handleGoogleSuccess = async (credentialResponse: {
+    credential?: string;
+  }) => {
+    if (!credentialResponse.credential) return;
 
-    window.google.accounts.id.initialize({
-      client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!,
-      callback: (response: { credential: string }) => {
-        void (async () => {
-          setIsGoogleLoading(true);
-          try {
-            const res = await fetch("/api/auth/google", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ idToken: response.credential }),
-            });
+    setIsGoogleLoading(true);
+    try {
+      const res = await fetch("/api/auth/google", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ idToken: credentialResponse.credential }),
+      });
 
-            if (!res.ok) {
-              toast.error("Google sign-in failed. Account not found.");
-              return;
-            }
+      if (!res.ok) {
+        toast.error("Google sign-in failed. Account not found.");
+        return;
+      }
 
-            toast.success("Signed in successfully!");
-            router.push(getRedirectUrl());
-            router.refresh();
-          } finally {
-            setIsGoogleLoading(false);
-          }
-        })();
-      },
-    });
-
-    googleInitialized.current = true;
+      toast.success("Signed in successfully!");
+      router.push(getRedirectUrl());
+      router.refresh();
+    } finally {
+      setIsGoogleLoading(false);
+    }
   };
 
   const handleGoogleClick = () => {
-    if (!window.google || !googleInitialized.current) {
-      toast.error("Google is not loaded yet. Please try again.");
-      return;
-    }
-
-    window.google.accounts.id.prompt();
+    const btn =
+      googleContainerRef.current?.querySelector<HTMLElement>(
+        '[role="button"]',
+      ) ??
+      googleContainerRef.current?.querySelector<HTMLElement>("div[tabindex]");
+    btn?.click();
   };
 
   const handleAppleClick = () => {
@@ -137,12 +122,6 @@ export default function AdminSignInPage() {
   return (
     <>
       <Script
-        src="https://accounts.google.com/gsi/client"
-        strategy="afterInteractive"
-        onLoad={initGoogle}
-      />
-
-      <Script
         src="https://appleid.cdn-apple.com/appleauth/static/jsapi/appleid/1/en_US/appleid.auth.js"
         strategy="afterInteractive"
         onLoad={() => {
@@ -155,6 +134,25 @@ export default function AdminSignInPage() {
           });
         }}
       />
+
+      <div
+        ref={googleContainerRef}
+        style={{
+          position: "absolute",
+          opacity: 0,
+          pointerEvents: "none",
+          height: 0,
+          overflow: "hidden",
+        }}
+      >
+        <GoogleLogin
+          onSuccess={(resp) => void handleGoogleSuccess(resp)}
+          onError={() => {
+            console.error("Google login failed");
+            toast.error("Google sign-in failed.");
+          }}
+        />
+      </div>
 
       <section className="relative min-h-205 w-screen overflow-hidden bg-[#2F4DF8] px-4 pt-7 lg:min-h-235 lg:px-8 xl:min-h-341.5 xl:pt-22">
         <div className="pointer-events-none absolute top-0 left-0 z-3 h-full w-full bg-[url('/images/admin/sign-in/background-grid.png')] bg-contain bg-center" />

@@ -154,7 +154,7 @@ export default function AdminSignInPage() {
         />
       </div>
 
-      <section className="relative min-h-205 w-screen overflow-hidden bg-[#2F4DF8] px-4 pt-7 lg:min-h-235 lg:px-8 xl:min-h-341.5 xl:pt-22">
+      <section className="relative w-full overflow-hidden bg-[#2F4DF8] px-4 pb-40 pt-7 md:pb-60 lg:px-8 xl:pb-[500px] xl:pt-22">
         <div className="pointer-events-none absolute top-0 left-0 z-3 h-full w-full bg-[url('/images/admin/sign-in/background-grid.png')] bg-contain bg-center" />
         <div
           className={cn("top-[-300px] left-[20%]", generalStyles.shadow_box)}
@@ -166,7 +166,7 @@ export default function AdminSignInPage() {
           className={`pointer-events-none absolute right-0 bottom-0 z-11 h-[163px] w-full bg-[linear-gradient(180deg,rgba(47,77,248,0.08)_3.47%,rgba(47,77,248,0.8)_100%)] md:h-[263px] xl:h-[563px]`}
         />
 
-        <div className="absolute right-[50%] bottom-0 z-10 flex translate-x-1/2 items-center justify-center pt-20">
+        <div className="absolute right-[50%] bottom-0 z-1 flex translate-x-1/2 items-center justify-center">
           <div className="relative h-[122px] w-[343px] md:h-[222px] md:w-[443px] xl:h-[522px] xl:w-[793px]">
             {Array.from({
               length: 4,
@@ -208,7 +208,7 @@ export default function AdminSignInPage() {
             })}
           </div>
         </div>
-        <div className="relative z-10 flex flex-col items-center justify-center">
+        <div className="relative z-12 flex flex-col items-center justify-center">
           <h1 className="w-full max-w-[862px] text-center text-3xl leading-[135%] font-bold text-white capitalize md:text-4xl lg:text-5xl">
             Manage your Tattoo Website
             <br />

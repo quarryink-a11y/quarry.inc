@@ -210,7 +210,7 @@ export function SignInForm({
           />
 
           <Button
-            className="h-[50px] w-full max-w-[378px] rounded-[20px] border border-white bg-white text-[18px] leading-[158.7%] font-normal tracking-[-0.03em] text-[#1C1A1A]"
+            className="h-[50px] w-full max-w-[378px] rounded-[20px] border border-black bg-black text-[18px] leading-[158.7%] font-normal tracking-[-0.03em] text-white hover:bg-black/90"
             size="lg"
             type="submit"
             variant="secondary"

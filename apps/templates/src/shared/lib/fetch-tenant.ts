@@ -11,11 +11,15 @@ export const fetchTenant = cache(async () => {
     "x-resolution-type",
   ) as ResolutionType | null;
 
+  console.warn("[fetchTenant] tenantHost:", tenantHost, "resolutionType:", resolutionType);
+
   if (!tenantHost) return null;
 
   const { data, error } = await apiClient.GET("/api/public/site", {
     headers: { "x-forwarded-host": tenantHost },
   });
+
+  console.warn("[fetchTenant] result:", { hasData: !!data, error: error ?? null });
 
   if (!data || error) return null;
 

@@ -36,6 +36,17 @@ export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const isPlatform = isPlatformHost(hostname);
 
+  console.warn(
+    "[Proxy]",
+    JSON.stringify({
+      host,
+      hostname,
+      pathname,
+      isPlatform,
+      platformHosts: PLATFORM_HOSTS,
+    }),
+  );
+
   // ── Determine effective path & slug ─────────────────────────
   // For platform hosts: strip slug from path to get the real route
   // e.g. /ivan-tattoo/admin/portfolio → slug="ivan-tattoo", effectivePath="/admin/portfolio"
@@ -58,6 +69,8 @@ export function proxy(request: NextRequest) {
     }
     // If firstSegment is a known app route: slug stays null, effectivePath stays as pathname
   }
+
+  console.warn("[Proxy] Resolved:", JSON.stringify({ slug, effectivePath }));
 
   // ── Admin auth guard (based on effective path) ──────────────
   if (
@@ -95,6 +108,7 @@ export function proxy(request: NextRequest) {
   }
 
   // Platform host, known app route, no slug — no tenant context
+  console.warn("[Proxy] No slug, passing through");
   return NextResponse.next();
 }
 

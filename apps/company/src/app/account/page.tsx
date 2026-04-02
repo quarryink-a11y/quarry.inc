@@ -15,6 +15,10 @@ interface GoogleAccountsId {
     callback: (response: { credential: string }) => void;
   }) => void;
   prompt: () => void;
+  renderButton: (
+    parent: HTMLElement,
+    options: { type?: string; size?: string },
+  ) => void;
 }
 
 interface AppleIDAuth {
@@ -120,25 +124,36 @@ export default function Page() {
   };
 
   const handleGoogleClick = () => {
-    console.warn(
-      "[Google Auth] Button clicked, initialized:",
-      googleInitialized.current,
-      "google:",
-      !!window.google,
-    );
     if (!window.google || !googleInitialized.current) {
       console.error("Google API not loaded");
       return;
     }
 
-    (window.google.accounts.id.prompt as (cb: (n: any) => void) => void)(
-      (notification) => {
-        console.warn(
-          "[Google Auth] Prompt notification:",
-          JSON.stringify(notification),
-        );
-      },
-    );
+    // Render hidden Google button if not yet rendered, then click it
+    let container = document.getElementById("g_id_signin_hidden");
+    if (!container) {
+      container = document.createElement("div");
+      container.id = "g_id_signin_hidden";
+      container.style.position = "absolute";
+      container.style.opacity = "0";
+      container.style.pointerEvents = "none";
+      container.style.width = "0";
+      container.style.height = "0";
+      container.style.overflow = "hidden";
+      document.body.appendChild(container);
+      window.google.accounts.id.renderButton(container, {
+        type: "icon",
+        size: "large",
+      });
+    }
+
+    // Click the rendered Google button
+    const btn =
+      container.querySelector<HTMLElement>('[role="button"]') ??
+      container.querySelector<HTMLElement>("div[tabindex]");
+    if (btn) {
+      btn.click();
+    }
   };
 
   const handleAppleClick = () => {

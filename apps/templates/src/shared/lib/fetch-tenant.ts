@@ -16,7 +16,7 @@ export const fetchTenant = cache(async () => {
   if (!tenantHost) return null;
 
   const { data, error } = await apiClient.GET("/api/public/site", {
-    headers: { "x-forwarded-host": tenantHost },
+    headers: { "x-tenant-host": tenantHost, "x-forwarded-host": tenantHost },
   });
 
   console.warn("[fetchTenant] result:", { hasData: !!data, error: error ?? null });
@@ -34,7 +34,7 @@ export const fetchTenantContent = cache(async () => {
   if (!tenantHost) return null;
 
   const { data, error } = await apiClient.GET("/api/public/site-content", {
-    headers: { "x-forwarded-host": tenantHost },
+    headers: { "x-tenant-host": tenantHost, "x-forwarded-host": tenantHost },
   });
 
   if (!data || error) return null;

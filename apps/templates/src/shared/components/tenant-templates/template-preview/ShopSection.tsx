@@ -71,6 +71,7 @@ export function ShopSection({
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "x-tenant-host": tenantHost ?? window.location.hostname,
           "x-forwarded-host": tenantHost ?? window.location.hostname,
         },
         body: JSON.stringify({

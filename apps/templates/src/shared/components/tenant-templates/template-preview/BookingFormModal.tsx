@@ -591,7 +591,10 @@ export function BookingFormModal({
               formData.append("file", file);
               return formData;
             },
-            headers: { "x-forwarded-host": tenantHost },
+            headers: {
+              "x-tenant-host": tenantHost,
+              "x-forwarded-host": tenantHost,
+            },
           } as never,
         );
         const result = data as { fileUrl?: string } | undefined;
@@ -617,7 +620,7 @@ export function BookingFormModal({
         client_phone: values.phone,
         status: "new",
       },
-      headers: { "x-forwarded-host": tenantHost },
+      headers: { "x-tenant-host": tenantHost, "x-forwarded-host": tenantHost },
     });
 
     setSent(true);

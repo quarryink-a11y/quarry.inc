@@ -71,6 +71,7 @@ export function ClientWrapper() {
         trafficSource,
       },
       headers: {
+        "x-tenant-host": tenantHost,
         "x-forwarded-host": tenantHost,
       },
     });

@@ -30,8 +30,14 @@ export class TenantResolutionGuard implements CanActivate {
     }
 
     private extractHost(request: Request): string {
-        // x-forwarded-host is set by Next.js BFF when proxying public API calls
-        // so the backend sees the real site domain, not the Next.js server host
+        // x-tenant-host is preferred — reverse proxies (Railway) overwrite x-forwarded-host
+        const tenantHost = request.headers['x-tenant-host'];
+        if (tenantHost) {
+            const raw = Array.isArray(tenantHost) ? tenantHost[0] : tenantHost;
+            return raw.replace(/:\d+$/, '');
+        }
+
+        // Fallback to x-forwarded-host for local dev
         const forwarded = request.headers['x-forwarded-host'];
         if (forwarded) {
             const raw = Array.isArray(forwarded) ? forwarded[0] : forwarded;

@@ -16,6 +16,7 @@ export function useSubmitInquiry() {
           placement: values.placement.join(", "),
         },
         headers: {
+          "x-tenant-host": tenantHost,
           "x-forwarded-host": tenantHost,
         },
       });

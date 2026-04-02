@@ -131,7 +131,14 @@ export default function Page() {
       return;
     }
 
-    window.google.accounts.id.prompt();
+    (window.google.accounts.id.prompt as (cb: (n: any) => void) => void)(
+      (notification) => {
+        console.warn(
+          "[Google Auth] Prompt notification:",
+          JSON.stringify(notification),
+        );
+      },
+    );
   };
 
   const handleAppleClick = () => {

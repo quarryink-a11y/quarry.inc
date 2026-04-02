@@ -52,9 +52,16 @@ export default function Page() {
   const initGoogle = () => {
     if (!window.google || googleInitialized.current) return;
 
+    const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
+    console.warn("[Google Auth] Initializing with client_id:", clientId);
+
     window.google.accounts.id.initialize({
-      client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!,
+      client_id: clientId!,
       callback: (response: { credential: string }) => {
+        console.warn(
+          "[Google Auth] Callback received, credential length:",
+          response.credential?.length,
+        );
         void (async () => {
           const res = await fetch("/api/auth/google", {
             method: "POST",
@@ -67,13 +74,18 @@ export default function Page() {
           });
 
           if (!res.ok) {
-            console.error("Google auth failed: ", await res.text());
+            console.error(
+              "[Google Auth] BFF failed:",
+              res.status,
+              await res.text(),
+            );
             return;
           }
 
           const data = (await res.json()) as {
             user: { id: string; email: string; display_name?: string | null };
           };
+          console.warn("[Google Auth] Success, user:", data.user.email);
           setAuthenticatedUser(data.user);
           window.location.replace("/account/onboarding");
         })();
@@ -108,6 +120,12 @@ export default function Page() {
   };
 
   const handleGoogleClick = () => {
+    console.warn(
+      "[Google Auth] Button clicked, initialized:",
+      googleInitialized.current,
+      "google:",
+      !!window.google,
+    );
     if (!window.google || !googleInitialized.current) {
       console.error("Google API not loaded");
       return;

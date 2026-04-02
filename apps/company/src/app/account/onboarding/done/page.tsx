@@ -39,8 +39,8 @@ export default function DonePage() {
 
   const hostname =
     siteDomain?.kind === "PLATFORM_SUBDOMAIN"
-      ? `${platformBaseDomain}/${siteDomain.host}`
-      : siteDomain?.host;
+      ? `https://${platformBaseDomain}/${siteDomain.host}`
+      : `https://${siteDomain?.host}`;
 
   return (
     <div className="flex items-center justify-center p-6">

@@ -54,7 +54,12 @@ export function OnboardingProvider({ currentStep, children }: ProviderProps) {
       return;
     }
 
-    if (currentStep !== navigation.currentStep) {
+    // Allow visiting previous (completed) steps, block skipping ahead
+    const stepKeys = navigation.steps.map((s) => s.key);
+    const currentIndex = stepKeys.indexOf(currentStep);
+    const allowedIndex = stepKeys.indexOf(navigation.currentStep);
+
+    if (currentIndex > allowedIndex || currentIndex === -1) {
       router.replace(`/account/onboarding/${navigation.currentStep}`);
     }
   }, [navigation, currentStep, router]);
@@ -96,11 +101,14 @@ export function OnboardingProvider({ currentStep, children }: ProviderProps) {
   // Block rendering until navigation is loaded and the step is correct.
   // This prevents a flash of the wrong page before the redirect fires.
   const isLoading = api.contextQuery.isLoading;
-  const isWrongStep =
-    navigation &&
-    (navigation.isCompleted
-      ? currentStep !== "done"
-      : currentStep !== navigation.currentStep);
+  const isWrongStep = (() => {
+    if (!navigation) return false;
+    if (navigation.isCompleted) return currentStep !== "done";
+    const stepKeys = navigation.steps.map((s) => s.key);
+    const currentIndex = stepKeys.indexOf(currentStep);
+    const allowedIndex = stepKeys.indexOf(navigation.currentStep);
+    return currentIndex > allowedIndex || currentIndex === -1;
+  })();
 
   if (isLoading || isWrongStep) {
     return (

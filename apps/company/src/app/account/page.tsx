@@ -1,25 +1,13 @@
 "use client";
 
+import { GoogleLogin } from "@react-oauth/google";
 import { useRouter } from "next/navigation";
 import Script from "next/script";
-import { useRef } from "react";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 import type { SignInValues } from "@/components/account/WelcomeForm";
 import { WelcomeForm } from "@/components/account/WelcomeForm";
 import { useAuth } from "@/providers/AuthProvider";
-
-interface GoogleAccountsId {
-  initialize: (config: {
-    client_id: string;
-    callback: (response: { credential: string }) => void;
-  }) => void;
-  prompt: () => void;
-  renderButton: (
-    parent: HTMLElement,
-    options: { type?: string; size?: string },
-  ) => void;
-}
 
 interface AppleIDAuth {
   init: (config: {
@@ -37,7 +25,6 @@ interface AppleIDAuth {
 
 declare global {
   interface Window {
-    google?: { accounts: { id: GoogleAccountsId } };
     AppleID?: { auth: AppleIDAuth };
   }
 }
@@ -45,7 +32,7 @@ declare global {
 export default function Page() {
   const { setAuthenticatedUser, user, isLoading, isAuthenticated } = useAuth();
   const router = useRouter();
-  const googleInitialized = useRef(false);
+  const googleContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!isLoading && isAuthenticated && user) {
@@ -53,50 +40,27 @@ export default function Page() {
     }
   }, [isLoading, isAuthenticated, user, router]);
 
-  const initGoogle = () => {
-    if (!window.google || googleInitialized.current) return;
+  const handleGoogleSuccess = async (credentialResponse: {
+    credential?: string;
+  }) => {
+    if (!credentialResponse.credential) return;
 
-    const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
-    console.warn("[Google Auth] Initializing with client_id:", clientId);
-
-    window.google.accounts.id.initialize({
-      client_id: clientId!,
-      callback: (response: { credential: string }) => {
-        console.warn(
-          "[Google Auth] Callback received, credential length:",
-          response.credential?.length,
-        );
-        void (async () => {
-          const res = await fetch("/api/auth/google", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              idToken: response.credential,
-            }),
-          });
-
-          if (!res.ok) {
-            console.error(
-              "[Google Auth] BFF failed:",
-              res.status,
-              await res.text(),
-            );
-            return;
-          }
-
-          const data = (await res.json()) as {
-            user: { id: string; email: string; display_name?: string | null };
-          };
-          console.warn("[Google Auth] Success, user:", data.user.email);
-          setAuthenticatedUser(data.user);
-          window.location.replace("/account/onboarding");
-        })();
-      },
+    const res = await fetch("/api/auth/google", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ idToken: credentialResponse.credential }),
     });
 
-    googleInitialized.current = true;
+    if (!res.ok) {
+      console.error("Google auth failed:", await res.text());
+      return;
+    }
+
+    const data = (await res.json()) as {
+      user: { id: string; email: string; display_name?: string | null };
+    };
+    setAuthenticatedUser(data.user);
+    window.location.replace("/account/onboarding");
   };
 
   const handleSubmit = async (data: SignInValues) => {
@@ -124,36 +88,12 @@ export default function Page() {
   };
 
   const handleGoogleClick = () => {
-    if (!window.google || !googleInitialized.current) {
-      console.error("Google API not loaded");
-      return;
-    }
-
-    // Render hidden Google button if not yet rendered, then click it
-    let container = document.getElementById("g_id_signin_hidden");
-    if (!container) {
-      container = document.createElement("div");
-      container.id = "g_id_signin_hidden";
-      container.style.position = "absolute";
-      container.style.opacity = "0";
-      container.style.pointerEvents = "none";
-      container.style.width = "0";
-      container.style.height = "0";
-      container.style.overflow = "hidden";
-      document.body.appendChild(container);
-      window.google.accounts.id.renderButton(container, {
-        type: "icon",
-        size: "large",
-      });
-    }
-
-    // Click the rendered Google button
     const btn =
-      container.querySelector<HTMLElement>('[role="button"]') ??
-      container.querySelector<HTMLElement>("div[tabindex]");
-    if (btn) {
-      btn.click();
-    }
+      googleContainerRef.current?.querySelector<HTMLElement>(
+        '[role="button"]',
+      ) ??
+      googleContainerRef.current?.querySelector<HTMLElement>("div[tabindex]");
+    btn?.click();
   };
 
   const handleAppleClick = () => {
@@ -211,12 +151,6 @@ export default function Page() {
   return (
     <>
       <Script
-        src="https://accounts.google.com/gsi/client"
-        strategy="afterInteractive"
-        onLoad={initGoogle}
-      />
-
-      <Script
         src="https://appleid.cdn-apple.com/appleauth/static/jsapi/appleid/1/en_US/appleid.auth.js"
         strategy="afterInteractive"
         onLoad={() => {
@@ -229,6 +163,22 @@ export default function Page() {
           });
         }}
       />
+
+      <div
+        ref={googleContainerRef}
+        style={{
+          position: "absolute",
+          opacity: 0,
+          pointerEvents: "none",
+          height: 0,
+          overflow: "hidden",
+        }}
+      >
+        <GoogleLogin
+          onSuccess={(resp) => void handleGoogleSuccess(resp)}
+          onError={() => console.error("Google login failed")}
+        />
+      </div>
 
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <WelcomeForm
